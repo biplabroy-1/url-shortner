@@ -23,6 +23,6 @@ export function normalizeUrl(url: string): string {
 }
 
 export function formatUrl(shortCode: string): string {
-  const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  const baseUrl = "https://url.globaltfn.tech";
   return `${baseUrl}/u/${shortCode}`;
 }

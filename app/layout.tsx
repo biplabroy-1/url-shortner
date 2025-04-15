@@ -21,12 +21,12 @@ export const metadata: Metadata = {
   description: "A simple and efficient URL shortening service",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { userId } = await auth();
+  const { userId } = auth();
 
   return (
     <html lang="en">
@@ -43,10 +43,10 @@ export default async function RootLayout({
                 {!userId ? (
                   <>
                     <SignInButton>
-                  <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
-                    Sign In
-                  </button>
-                </SignInButton>
+                      <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                        Sign In
+                      </button>
+                    </SignInButton>
                   </>
                 ) : (
                   <>

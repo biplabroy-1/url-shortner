@@ -1,17 +1,17 @@
-import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Url from '@/lib/models/url';
+import { type NextRequest, NextResponse } from "next/server";
+import connectDB from "@/lib/mongodb";
+import Url from "@/lib/models/url";
 
-export async function GET(req: NextRequest, { params }: { params: { shortCode: string } }) {
+export async function GET(req: NextRequest) {
   try {
-    const { shortCode } = await params;
-    
+    const shortCode = req.nextUrl.pathname.split("/").pop() || {};
+
     await connectDB();
 
     const url = await Url.findOne({ shortCode });
-    
+
     if (!url) {
-      return NextResponse.json({ error: 'URL not found' }, { status: 404 });
+      return NextResponse.json({ error: "URL not found" }, { status: 404 });
     }
 
     // Increment click count
@@ -19,11 +19,10 @@ export async function GET(req: NextRequest, { params }: { params: { shortCode: s
 
     // Redirect to original URL
     return NextResponse.redirect(url.originalUrl);
-
   } catch (error) {
-    console.error('Error redirecting to URL:', error);
+    console.error("Error redirecting to URL:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

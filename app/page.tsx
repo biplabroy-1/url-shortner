@@ -57,7 +57,7 @@ export default function Home() {
       setShortUrl(formatUrl(data.shortCode));
       setUrl("");
     } catch (err) {
-      setError(err.message);
+      setError((err as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -115,6 +115,12 @@ export default function Home() {
                       readOnly
                       className="flex-1 text-white px-3 py-2 bg-zinc-600/50 rounded border border-zinc-600 text-sm"
                     />
+                                      <button
+                    onClick={() => window.open(`${shortUrl}`, '_blank')}
+                    className="px-4 py-2 bg-transparent border border-gray-500 text-white hover:bg-white hover:text-black rounded text-sm transition-colors whitespace-nowrap"
+                  >
+                    Goto
+                  </button>
                     <button
                       onClick={() => navigator.clipboard.writeText(shortUrl)}
                       className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors whitespace-nowrap"
@@ -136,6 +142,7 @@ export default function Home() {
             </div>
         </div>
 
+          <h2 className="text-2xl text-center font-bold text-white mb-4">Stats</h2>
 
         {/* Statistics Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">

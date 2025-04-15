@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { formatUrl } from '@/lib/url-utils';
-import { useRouter } from 'next/navigation'
 
 interface UrlData {
   _id: string;
@@ -20,7 +19,6 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
-  const router = useRouter();
   const { userId } = useAuth();
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +38,7 @@ export default function DashboardPage() {
         const data = await response.json();
         setData(data);
       } catch (err) {
-        setError(err.message);
+        setError((err as Error).message);
       } finally {
         setIsLoading(false);
       }
@@ -79,7 +77,7 @@ export default function DashboardPage() {
         setData(newData);
       }
     } catch (err) {
-      setShortenError(err.message);
+      setShortenError((err as Error).message);
     } finally {
       setIsShortening(false);
     }
@@ -146,7 +144,7 @@ export default function DashboardPage() {
                   className="flex-1 px-3 py-2 text-white bg-zinc-600/50 rounded border border-zinc-600 text-sm"
                 />
                 <button
-                  onClick={() => router.push(shortUrl)}
+                  onClick={() => window.open(`${shortUrl}`, '_blank')}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors whitespace-nowrap"
                 >
                   Goto
@@ -213,7 +211,7 @@ export default function DashboardPage() {
                     className="flex-1 px-3 py-2 text-white bg-zinc-600/50 rounded border border-zinc-600 text-sm"
                   />
                   <button
-                    onClick={() => router.push(shortUrl)}
+                    onClick={() => window.open(`${shortUrl}`, '_blank')}
                     className="px-4 py-2 bg-transparent border border-gray-500 text-white hover:bg-white hover:text-black rounded text-sm transition-colors whitespace-nowrap"
                   >
                     Goto

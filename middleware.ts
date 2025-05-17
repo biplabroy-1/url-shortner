@@ -3,7 +3,7 @@ import { authMiddleware } from "@clerk/nextjs";
 export default authMiddleware({
   publicRoutes: ["/", "/api/stats", "/api/shorten", "/u(.*)"],
   clockSkewInMs: 30000,
-  // authorizedParties: ["https://url.globaltfn.tech"],
+  authorizedParties: ["https://shorturl.wowdev.xyz"]
 });
 
 export const config = {

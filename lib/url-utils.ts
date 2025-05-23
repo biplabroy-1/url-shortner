@@ -23,6 +23,6 @@ export function normalizeUrl(url: string): string {
 }
 
 export function formatUrl(shortCode: string): string {
-  const baseUrl = process.env.PRODUCTION_URL || "https://shorturl.wowdev.xyz;
+  const baseUrl = process.env.PRODUCTION_URL || "https://shorturl.wowdev.xyz";
   return `${baseUrl}/u/${shortCode}`;
 }

@@ -1,0 +1,107 @@
+"use client";
+
+import { formatUrl } from "@/lib/url-utils";
+import Link from "next/link";
+import React, { useState } from "react";
+
+export const ShortUrl = () => {
+  const [url, setUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [shortUrl, setShortUrl] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    setError("");
+    setShortUrl("");
+
+    try {
+      const response = await fetch("/api/shorten", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to shorten URL");
+      }
+
+      const data = await response.json();
+
+      setShortUrl(formatUrl(data.shortCode));
+      setUrl("");
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="bg-zinc-800/50 backdrop-blur-sm rounded-xl p-6 space-y-6">
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <input
+            type="text"
+            placeholder="Paste your long URL here..."
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            className="flex-1 px-4 py-3 rounded-lg text-white bg-zinc-700/50 border border-zinc-600 focus:outline-none focus:border-blue-500 transition-colors"
+          />
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading || !url}
+            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          >
+            {isLoading ? "Shortening..." : "Shorten URL"}
+          </button>
+        </div>
+        <p className="text-sm text-amber-400">
+          Note: URLs created without an account will expire after 10 minutes
+        </p>
+
+        {error && (
+          <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm">
+            {error}
+          </div>
+        )}
+
+        {shortUrl && (
+          <div className="p-4 bg-zinc-700/50 rounded-lg space-y-2">
+            <p className="text-sm text-zinc-400">Your shortened URL:</p>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={shortUrl}
+                readOnly
+                className="flex-1 text-white px-3 py-2 bg-zinc-600/50 rounded border border-zinc-600 text-sm"
+              />
+              <button
+                onClick={() => window.open(`${shortUrl}`, "_blank")}
+                className="px-4 py-2 bg-transparent border border-gray-500 text-white hover:bg-white hover:text-black rounded text-sm transition-colors whitespace-nowrap"
+              >
+                Goto
+              </button>
+              <button
+                onClick={() => navigator.clipboard.writeText(shortUrl)}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors whitespace-nowrap"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="text-center pt-2">
+          <Link
+            href="/dashboard"
+            className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+          >
+            View your shortened URLs →
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};

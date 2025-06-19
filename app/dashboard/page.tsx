@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { formatUrl } from "@/lib/url-utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface UrlData {
   _id: string;
@@ -119,13 +121,13 @@ export default function DashboardPage() {
               onChange={(e) => setUrl(e.target.value)}
               className="flex-1 px-4 text-white py-3 rounded-lg bg-zinc-700/50 border border-zinc-600 focus:outline-none focus:border-blue-500 transition-colors"
             />
-            <button
+            <Button
               onClick={handleSubmit}
               disabled={isShortening || !url}
-              className="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              className="px-10 py-6 bg-blue-600  cursor-pointer hover:bg-blue-700 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
             >
               {isShortening ? "Shortening..." : "Shorten URL"}
-            </button>
+            </Button>
           </div>
 
           {shortenError && (
@@ -144,18 +146,20 @@ export default function DashboardPage() {
                   readOnly
                   className="flex-1 px-3 py-2 text-white bg-zinc-600/50 rounded border border-zinc-600 text-sm"
                 />
-                <button
-                  onClick={() => window.open(`${shortUrl}`, "_blank")}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors whitespace-nowrap"
+                <Link
+                  href={shortUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-transparent border border-gray-500 text-white hover:bg-white hover:text-black rounded text-sm transition-colors whitespace-nowrap"
                 >
                   Goto
-                </button>
-                <button
+                </Link>
+                <Button
                   onClick={() => navigator.clipboard.writeText(shortUrl)}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors whitespace-nowrap"
+                  className="px-4 py-2 bg-blue-600 cursor-pointer hover:bg-blue-700 rounded text-sm transition-colors whitespace-nowrap"
                 >
                   Copy
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -224,18 +228,20 @@ export default function DashboardPage() {
                       readOnly
                       className="flex-1 px-3 py-2 text-white bg-zinc-600/50 rounded border border-zinc-600 text-sm"
                     />
-                    <button
-                      onClick={() => window.open(`${shortUrl}`, "_blank")}
+                    <Link
+                      href={`/u/${url.shortCode}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="px-4 py-2 bg-transparent border border-gray-500 text-white hover:bg-white hover:text-black rounded text-sm transition-colors whitespace-nowrap"
                     >
                       Goto
-                    </button>
-                    <button
+                    </Link>
+                    <Button
                       onClick={() => handleCopy(url.shortCode)}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors whitespace-nowrap"
+                      className="px-4 py-2 bg-blue-600 cursor-pointer hover:bg-blue-700 rounded text-sm transition-colors whitespace-nowrap"
                     >
                       Copy
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}

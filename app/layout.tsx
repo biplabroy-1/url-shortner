@@ -1,4 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
@@ -31,6 +33,8 @@ export default function RootLayout({
 					className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gradient-to-b from-zinc-900 to-black`}
 				>
 					<Navbar />
+					<SpeedInsights />
+					<Analytics />
 					{children}
 				</body>
 			</ClerkProvider>

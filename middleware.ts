@@ -1,9 +1,9 @@
-import { authMiddleware } from "@clerk/nextjs";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default authMiddleware({
-  publicRoutes: ["/", "/api/stats", "/api/shorten", "/u(.*)"],
-  clockSkewInMs: 30000,
-  authorizedParties: ["https://shorturl.wowdev.xyz"]
+const isProtectedRoute = createRouteMatcher(['/dashboard(.*)'])
+
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) await auth.protect()
 });
 
 export const config = {

@@ -1,51 +1,35 @@
-import mongoose from 'mongoose';
+import mongoose, { type Mongoose } from "mongoose";
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('Please add your MongoDB URI to .env.local');
+const MONGODB_URI = process.env.MONGODB_URI as string;
+
+if (!MONGODB_URI) {
+  throw new Error("Please add your MongoDB URI to .env.local");
 }
 
-const MONGODB_URI = process.env.MONGODB_URI;
+// Use a module-local cache instead of polluting `globalThis`
+const cached: {
+  conn: Mongoose | null;
+  promise: Promise<Mongoose> | null;
+} = {
+  conn: null,
+  promise: null,
+};
 
-interface MongooseCache {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
-}
+export default async function connectDB(): Promise<Mongoose> {
+  if (cached.conn) return cached.conn;
 
-declare global {
-  // eslint-disable-next-line no-var
-  var mongoose: MongooseCache | undefined;
-}
-
-
-let cached = global.mongoose;
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
-
-async function connectDB() {
-  if (cached?.conn) {
-    return cached.conn;
-  }
-
-  if (!cached?.promise) {
-    const opts = {
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
-    };
-
-    cached!.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
     });
   }
 
   try {
-    cached!.conn = await cached!.promise;
-  } catch (e) {
-    cached!.promise = null;
-    throw e;
+    cached.conn = await cached.promise;
+  } catch (err) {
+    cached.promise = null;
+    throw err;
   }
 
-  return cached!.conn;
+  return cached.conn;
 }
-
-export default connectDB;
